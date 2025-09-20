@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Restaurant Management System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Landing Page -->
+    <div id="landingPage" class="page active">
+        <div class="landing-container">
+            <div class="hotel-header">
+                <h1>Prakruti Restaurant </h1>
+                <p>Order & Billing </p>
+            </div>
+            <div class="role-selection">
+                <button class="role-btn admin-btn" onclick="showAdminLogin()">
+                    <div class="role-icon">👨‍💼</div>
+                    <span>Manager Login</span>
+                </button>
+                <button class="role-btn server-btn" onclick="showServerDashboard()">
+                    <div class="role-icon">👨‍🍳</div>
+                    <span>Server Login</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Login Page -->
+    <div id="adminLoginPage" class="page">
+        <div class="auth-container">
+            <h2>Manager Login</h2>
+            <form id="adminLoginForm">
+                <div class="form-group">
+                    <input type="text" id="adminMobile" placeholder="Mobile Number" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="adminPassword" placeholder="Password" required>
+                </div>
+                <button type="submit" class="auth-btn">Login</button>
+                <p class="auth-link">
+                    First time? <a href="#" onclick="showAdminRegister()">Register here</a>
+                </p>
+            </form>
+        </div>
+        <button class="back-btn" onclick="showLandingPage()">← Back</button>
+    </div>
+
+    <!-- Admin Registration Page -->
+    <div id="adminRegisterPage" class="page">
+        <div class="auth-container">
+            <h2>ManagerRegistration</h2>
+            <form id="adminRegisterForm">
+                <div class="form-group">
+                    <input type="text" id="regAdminMobile" placeholder="Mobile Number" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="regAdminPassword" placeholder="Password (min 6 chars)" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+                </div>
+                <button type="submit" class="auth-btn">Register</button>
+                <p class="auth-link">
+                    Already registered? <a href="#" onclick="showAdminLogin()">Login here</a>
+                </p>
+            </form>
+        </div>
+        <button class="back-btn" onclick="showLandingPage()">← Back</button>
+    </div>
+
+    <!-- Server Dashboard -->
+    <div id="serverDashboard" class="page">
+        <div class="server-header">
+            <h2>Server Dashboard</h2>
+            <div class="table-controls">
+                <div class="table-selector">
+                    <label>Table:</label>
+                    <select id="currentTable" onchange="switchTable()">
+                        <option value="1">Table 1</option>
+                        <option value="2">Table 2</option>
+                        <option value="3">Table 3</option>
+                        <option value="4">Table 4</option>
+                        <option value="5">Table 5</option>
+                        <option value="6">Table 6</option>
+                        <option value="7">Table 7</option>
+                    </select>
+                </div>
+                <div class="customer-selector">
+                    <label>Customer:</label>
+                    <select id="currentCustomer" onchange="switchCustomer()"></select>
+                    <button class="add-customer-btn" onclick="addNewCustomer()">+ Add Customer</button>
+                </div>
+            </div>
+            <button class="back-btn" onclick="showLandingPage()">← Back</button>
+        </div>
+        
+        <div class="server-content">
+            <div class="menu-section">
+                <h3>Menu Items</h3>
+                <div class="search-bar">
+                    <input type="text" id="menuSearch" placeholder="Search menu items..." onkeyup="searchMenu()">
+                </div>
+                <div id="serverMenuItems" class="server-menu-items"></div>
+            </div>
+            
+            <div class="order-section">
+                <div class="order-header">
+                    <h3>Table <span id="currentTableDisplay">1</span><span id="currentCustomerDisplay"></span> Orders</h3>
+                    <button class="complete-btn" onclick="completeOrders()">Orders Completed</button>
+                </div>
+                <div id="currentOrders" class="current-orders"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Manager Dashboard -->
+    <div id="adminDashboard" class="page">
+        <div class="admin-header">
+            <h2>Manager Dashboard</h2>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+        <div class="admin-tabs">
+            <button class="tab-btn active" onclick="showTab('menu-management')">Menu Management</button>
+            <button class="tab-btn" onclick="showTab('billing')">Billing</button>
+            <button class="tab-btn" onclick="showTab('history')">History</button>
+        </div>
+
+        <!-- Menu Management Tab -->
+        <div id="menu-management" class="tab-content active">
+            <div class="menu-header">
+                <h3>Menu Items</h3>
+                <button class="add-btn" onclick="showAddItemModal()">+ Add Item</button>
+            </div>
+            <div id="menuItemsList" class="menu-items-list"></div>
+        </div>
+
+        <!-- Billing Tab -->
+        <div id="billing" class="tab-content">
+            <h3>Table Billing</h3>
+            <div id="billingTables" class="billing-tables"></div>
+        </div>
+
+        <!-- History Tab -->
+        <div id="history" class="tab-content">
+            <div class="history-header">
+                <h3>Payment History</h3>
+                <input type="date" id="historyDate" onchange="filterHistory()">
+            </div>
+            <div id="historyList" class="history-list"></div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Item Modal -->
+    <div id="addItemModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="addEditModalTitle">Add Menu Item</h3>
+                <span class="close" onclick="closeAddItemModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="addItemForm">
+                    <div class="form-group">
+                        <input type="text" id="itemName" placeholder="Item Name" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="number" id="itemPriceFull" placeholder="Price (Full Portion)" min="0" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="number" id="itemPriceHalf" placeholder="Price (Half Portion)" min="0" step="0.01">
+                    </div>
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" id="itemHasHalf">
+                            Half Portion Available
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <textarea id="itemDescription" placeholder="Description (optional)" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="add-btn" id="addEditBtn">Add Item</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Missing Billing Item Modal -->
+    <div id="addBillingItemModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add Missing Item to Bill</h3>
+                <span class="close" onclick="closeAddBillingItemModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="addBillingItemForm">
+                    <div class="form-group">
+                        <label>Select Item:</label>
+                        <select id="billingItemMenu" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Quantity:</label>
+                        <input type="number" id="billingItemQty" min="1" value="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Portion:</label>
+                        <select id="billingItemPortion">
+                            <option value="full">Full</option>
+                            <option value="half">Half</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="add-btn">Add to Bill</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table Detail Modal -->
+    <div id="tableDetailModal" class="modal">
+        <div class="modal-content large-modal">
+            <div class="modal-header">
+                <h3>Bill Details - <span id="modalTableNumber"></span></h3>
+                <span class="close" onclick="closeTableModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="bill-actions">
+                    <button class="add-btn" onclick="showAddBillingItemModal()">+ Add Missing Item</button>
+                </div>
+                <div id="billItems" class="bill-items"></div>
+                <div class="bill-summary">
+                    <div class="bill-total">
+                        <h4>Total Amount: ₹<span id="billTotal">0.00</span></h4>
+                    </div>
+                    <button class="payment-btn" onclick="markPaymentReceived()">Payment Received</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
